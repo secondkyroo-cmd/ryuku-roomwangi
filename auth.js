@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function redirectIfAlreadyLoggedIn() {
-  const { data } = await supabase.auth.getSession();
+  const { data } = await supabaseClient.auth.getSession();
   if (data?.session) window.location.href = "home.html";
 }
 
@@ -56,7 +56,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
   btn.disabled = true; btn.textContent = "Memproses...";
 
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
     email: usernameToEmail(username),
     password,
   });
@@ -112,7 +112,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
 
   btn.disabled = true; btn.textContent = "Memproses...";
 
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await supabaseClient.auth.signUp({
     email: usernameToEmail(username),
     password,
     options: { data: { username } }
