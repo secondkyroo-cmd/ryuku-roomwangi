@@ -15,7 +15,7 @@ let currentPage = 1;
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
-  const { data } = await supabase.auth.getSession();
+  const { data } = await supabaseClient.auth.getSession();
   if (!data?.session) { window.location.href = "index.html"; return; }
   currentUser = data.session.user;
 
@@ -49,7 +49,7 @@ async function loadProfile() {
 }
 
 async function loadSettings() {
-  const { data } = await supabase.from("settings").select("*").eq("key", "reseller_discount_percent").single();
+  const { data } = await supabaseClient.from("settings").select("*").eq("key", "reseller_discount_percent").single();
   resellerDiscountPercent = data ? parseFloat(data.value) : 0;
 
   document.getElementById("profileDiscount").textContent =
@@ -57,7 +57,7 @@ async function loadSettings() {
 }
 
 function logout() {
-  supabase.auth.signOut().then(() => window.location.href = "index.html");
+  supabaseClient.auth.signOut().then(() => window.location.href = "index.html");
 }
 
 /* ---------------- NAV PILLS / VIEWS ---------------- */
@@ -241,7 +241,7 @@ async function buyProduct(productId) {
   const price = effectivePrice(product);
   if (!confirm(`Beli "${product.name}" seharga ${formatRp(price)}?`)) return;
 
-  const { error: orderError } = await supabase.from("orders").insert({
+  const { error: orderError } = await supabaseClient.from("orders").insert({
     user_id: currentUser.id,
     product_id: product.id,
     product_name: product.name,
@@ -253,7 +253,7 @@ async function buyProduct(productId) {
 
   if (orderError) { alert("Gagal membuat pesanan: " + orderError.message); return; }
 
-  await supabase.from("products").update({ stock: product.stock - 1 }).eq("id", product.id);
+  await supabaseClient.from("products").update({ stock: product.stock - 1 }).eq("id", product.id);
 
   alert("Pembelian berhasil! Lihat di tab Riwayat.");
   await loadProducts();
