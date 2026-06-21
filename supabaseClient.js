@@ -10,7 +10,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_ZrxJxzJK4rcXtKP7b-2bOQ_VMWXghig";
 
 // Domain palsu untuk memetakan "username" menjadi format email
 // yang dibutuhkan oleh Supabase Auth (lihat README bagian Auth).
-const USERNAME_EMAIL_DOMAIN = "users.hijauku.app";
+const USERNAME_EMAIL_DOMAIN = "gmail.com";
 
 if (!window.supabase || typeof window.supabase.createClient !== "function") {
   // Library CDN belum termuat saat file ini dijalankan — biasanya karena
