@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hijauku Marketplace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo"><div class="mark"></div> Hijauku</div>
+  <div class="topbar-right">
+    <span class="role-chip" id="roleChip">USER</span>
+    <span id="adminLink" style="display:none;"><a href="admin.html" class="btn btn-ghost btn-sm">Panel Admin</a></span>
+    <span class="logout-link" onclick="logout()">Keluar</span>
+  </div>
+</div>
+
+<main class="shell">
+
+  <!-- BANNER (diatur owner, max 3 gambar) -->
+  <div class="banner" id="banner">
+    <div class="banner-track" id="bannerTrack"></div>
+    <div class="banner-dots" id="bannerDots"></div>
+  </div>
+
+  <!-- NAV PILLS: home / profile / riwayat -->
+  <div class="nav-pills">
+    <div class="nav-pill active" data-view="home" onclick="switchView('home')">
+      <span class="ic">🏠</span> Home
+    </div>
+    <div class="nav-pill" data-view="profile" onclick="switchView('profile')">
+      <span class="ic">👤</span> Profile
+    </div>
+    <div class="nav-pill" data-view="riwayat" onclick="switchView('riwayat')">
+      <span class="ic">🧾</span> Riwayat
+    </div>
+  </div>
+
+  <!-- ===================== VIEW: HOME ===================== -->
+  <section class="view active" id="view-home">
+
+    <!-- FLASH SALE (tampil hanya jika owner menyediakan) -->
+    <div class="flash-wrap" id="flashWrap" style="display:none;">
+      <div class="flash-head">
+        <span class="bolt">⚡</span>
+        <h2>Flash Sale Hari Ini</h2>
+        <span class="flash-timer">Stok terbatas, selagi ada!</span>
+      </div>
+      <div class="flash-track" id="flashTrack"></div>
+    </div>
+
+    <!-- SEARCH + SORT -->
+    <div class="toolbar">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="Cari produk...">
+      </div>
+      <select class="sort-select" id="sortSelect">
+        <option value="default">Urutkan</option>
+        <option value="asc">Harga: Termurah</option>
+        <option value="desc">Harga: Termahal</option>
+      </select>
+    </div>
+
+    <div class="sec-head">
+      <h2>Katalog Produk</h2>
+      <span class="sub" id="productCount"></span>
+    </div>
+
+    <div class="catalog-grid" id="catalogGrid"></div>
+    <div class="empty-state" id="emptyState" style="display:none;">Belum ada produk yang cocok.</div>
+    <div class="pagination" id="pagination"></div>
+  </section>
+
+  <!-- ===================== VIEW: PROFILE ===================== -->
+  <section class="view" id="view-profile">
+    <div class="sec-head"><h2>Profile Saya</h2></div>
+    <div class="card profile-card" id="profileCard">
+      <div class="profile-avatar" id="profileAvatar">?</div>
+      <div class="profile-row"><span>Username</span><span id="profileUsername">-</span></div>
+      <div class="profile-row"><span>Role</span><span id="profileRole">-</span></div>
+      <div class="profile-row"><span>Diskon reseller</span><span id="profileDiscount">-</span></div>
+      <div class="profile-row"><span>Bergabung sejak</span><span id="profileJoined">-</span></div>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW: RIWAYAT ===================== -->
+  <section class="view" id="view-riwayat">
+    <div class="sec-head"><h2>Riwayat Pembelian</h2></div>
+    <div id="historyList"></div>
+    <div class="empty-state" id="historyEmpty" style="display:none;">Belum ada riwayat pembelian.</div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">🌿 Hijauku Marketplace</div>
+    <div class="footer-meta">
+      <div><b>Sejak</b>2024</div>
+      <div><b>Dibuat di</b>Indonesia</div>
+      <div><b>WhatsApp</b>+62 812-3456-7890</div>
+    </div>
+  </div>
+</footer>
+
+<script src="supabaseClient.js"></script>
+<script src="home.js"></script>
+</body>
+</html>
