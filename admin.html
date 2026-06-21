@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hijauku Marketplace — Panel Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<div class="admin-layout">
+  <aside class="admin-side">
+    <div class="logo"><div class="mark"></div> Hijauku Admin</div>
+    <div class="admin-link active" data-sec="dashboard" onclick="switchSection('dashboard')">📊 Dashboard</div>
+    <div class="admin-link" data-sec="products" onclick="switchSection('products')">📦 Produk</div>
+    <div class="admin-link" data-sec="banners" onclick="switchSection('banners')">🖼️ Banner</div>
+    <div class="admin-link" data-sec="flash" onclick="switchSection('flash')">⚡ Flash Sale</div>
+    <div class="admin-link" data-sec="users" onclick="switchSection('users')">👥 Pengguna & Role</div>
+    <div style="flex:1;"></div>
+    <div class="admin-link" onclick="window.location.href='home.html'">🏠 Ke halaman utama</div>
+    <div class="admin-link" onclick="logout()">🚪 Keluar</div>
+  </aside>
+
+  <main class="admin-main">
+
+    <!-- DASHBOARD -->
+    <section class="admin-section active" id="sec-dashboard">
+      <div class="admin-head"><h1>Dashboard</h1></div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="num" id="statProducts">0</div><div class="lbl">Total produk</div></div>
+        <div class="stat-card"><div class="num" id="statOrders">0</div><div class="lbl">Total pesanan</div></div>
+        <div class="stat-card"><div class="num" id="statUsers">0</div><div class="lbl">Total pengguna</div></div>
+        <div class="stat-card"><div class="num" id="statResellers">0</div><div class="lbl">Reseller aktif</div></div>
+      </div>
+      <div class="card" style="padding:22px;">
+        <h3 style="margin-bottom:14px;">Diskon permanen untuk role Reseller</h3>
+        <p style="font-size:13px; color:var(--ink-soft); margin-bottom:14px;">
+          Nilai ini otomatis dipotong dari harga semua produk untuk setiap pengguna berperan <b>reseller</b>.
+        </p>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <div class="input-wrap" style="max-width:140px;">
+            <input type="number" id="resellerDiscountInput" min="0" max="100" step="1">
+          </div>
+          <span>%</span>
+          <button class="btn btn-primary btn-sm" onclick="saveResellerDiscount()">Simpan</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section class="admin-section" id="sec-products">
+      <div class="admin-head">
+        <h1>Produk</h1>
+        <button class="btn btn-primary btn-sm" onclick="openProductModal()">+ Tambah produk</button>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>Produk</th><th>Harga</th><th>Diskon</th><th>Stok</th><th>Status</th><th>Aksi</th></tr></thead>
+          <tbody id="productsTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- BANNERS -->
+    <section class="admin-section" id="sec-banners">
+      <div class="admin-head">
+        <h1>Banner Beranda</h1>
+        <button class="btn btn-primary btn-sm" onclick="openBannerModal()">+ Tambah banner</button>
+      </div>
+      <p style="font-size:13px; color:var(--ink-soft); margin-bottom:14px;">Maksimal 3 banner ditampilkan di carousel beranda, diurutkan dari nomor urut terkecil.</p>
+      <div id="bannersList"></div>
+    </section>
+
+    <!-- FLASH SALE -->
+    <section class="admin-section" id="sec-flash">
+      <div class="admin-head"><h1>Flash Sale</h1></div>
+      <p style="font-size:13px; color:var(--ink-soft); margin-bottom:14px;">Aktifkan flash sale pada produk dan tentukan harga spesialnya. Produk flash sale otomatis tampil di kolom flash sale beranda.</p>
+      <div id="flashList"></div>
+    </section>
+
+    <!-- USERS / ROLES -->
+    <section class="admin-section" id="sec-users">
+      <div class="admin-head"><h1>Pengguna & Role</h1></div>
+      <div class="table-card">
+        <table>
+          <thead><tr><th>Username</th><th>Bergabung</th><th>Role saat ini</th><th>Ubah role</th></tr></thead>
+          <tbody id="usersTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- MODAL: PRODUCT -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal-box">
+    <h3 id="productModalTitle">Tambah Produk</h3>
+    <input type="hidden" id="productId">
+    <div class="field"><label>Nama produk</label><div class="input-wrap"><input type="text" id="productName" required></div></div>
+    <div class="field"><label>Deskripsi</label><div class="input-wrap"><input type="text" id="productDesc"></div></div>
+    <div class="grid-2">
+      <div class="field"><label>Harga (Rp)</label><div class="input-wrap"><input type="number" id="productPrice" min="0" required></div></div>
+      <div class="field"><label>Diskon (%)</label><div class="input-wrap"><input type="number" id="productDiscount" min="0" max="100" value="0"></div></div>
+    </div>
+    <div class="field"><label>Stok</label><div class="input-wrap"><input type="number" id="productStock" min="0" required></div></div>
+    <div class="field"><label>URL gambar produk</label><div class="input-wrap"><input type="text" id="productImage" placeholder="https://..."></div></div>
+    <div style="display:flex; gap:10px; margin-top:18px;">
+      <button class="btn btn-ghost btn-block" onclick="closeModal('productModal')">Batal</button>
+      <button class="btn btn-primary btn-block" onclick="saveProduct()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: BANNER -->
+<div class="modal-overlay" id="bannerModal">
+  <div class="modal-box">
+    <h3>Tambah Banner</h3>
+    <div class="field"><label>URL gambar banner</label><div class="input-wrap"><input type="text" id="bannerImage" placeholder="https://..." required></div></div>
+    <div class="field"><label>Urutan tampil</label><div class="input-wrap"><input type="number" id="bannerOrder" value="0"></div></div>
+    <div style="display:flex; gap:10px; margin-top:18px;">
+      <button class="btn btn-ghost btn-block" onclick="closeModal('bannerModal')">Batal</button>
+      <button class="btn btn-primary btn-block" onclick="saveBanner()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/supabaseClient.js"></script>
+<script src="assets/js/admin.js"></script>
+</body>
+</html>
