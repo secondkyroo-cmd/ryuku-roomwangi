@@ -5,12 +5,12 @@
    3. File ini di-include sebelum auth.js / home.js / admin.js
 =========================================================== */
 
-const SUPABASE_URL = "https://YOUR-PROJECT-REF.supabase.co";
-const SUPABASE_ANON_KEY = "YOUR-ANON-PUBLIC-KEY";
+const SUPABASE_URL = "https://pbbekpviydafuthojkho.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_ZrxJxzJK4rcXtKP7b-2bOQ_VMWXghig";
 
 // Domain palsu untuk memetakan "username" menjadi format email
 // yang dibutuhkan oleh Supabase Auth (lihat README bagian Auth).
-const USERNAME_EMAIL_DOMAIN = "users.hijauku.app";
+const USERNAME_EMAIL_DOMAIN = "user.ryukuu";
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
