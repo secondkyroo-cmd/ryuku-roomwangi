@@ -76,6 +76,10 @@
         <option value="asc">Harga: Termurah</option>
         <option value="desc">Harga: Termahal</option>
       </select>
+      <select class="sort-select" id="layoutSelect">
+        <option value="vertical">Tampilan: Ke bawah</option>
+        <option value="horizontal">Tampilan: Ke samping</option>
+      </select>
     </div>
 
     <div class="sec-head">
@@ -112,10 +116,19 @@
 <footer class="site-footer">
   <div class="footer-grid">
     <div class="footer-brand"><span class="footer-mark"></span> Hijauku Marketplace</div>
-    <div class="footer-meta">
-      <div><b>Sejak</b>2024</div>
-      <div><b>Dibuat di</b>Indonesia</div>
-      <div><b>WhatsApp</b>+62 812-3456-7890</div>
+
+    <div class="footer-slide-area">
+      <div class="footer-slides" id="footerSlides">
+        <div class="footer-slide">
+          <div><b>Sejak</b>2024</div>
+          <div><b>Dibuat di</b>Indonesia</div>
+        </div>
+        <div class="footer-slide">
+          <div><b>WhatsApp</b>+62 812-3456-7890</div>
+          <div><b>Jam Operasional</b>09.00–21.00 WIB</div>
+        </div>
+      </div>
+      <div class="footer-slide-dots" id="footerSlideDots"></div>
     </div>
   </div>
 </footer>
