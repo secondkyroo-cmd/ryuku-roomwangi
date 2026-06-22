@@ -214,7 +214,7 @@ function productCardHtml(p) {
           ${hasDiscount ? `<span class="product-price-old">${formatRp(p.price)}</span>` : ""}
         </div>
         <div class="product-stock ${stockClass}">${stockLabel}</div>
-        <button class="buy-btn" ${p.stock === 0 ? "disabled" : ""} onclick="buyProduct('${p.id}')">
+        <button class="buy-btn" ${p.stock === 0 ? "disabled" : ""} onclick="openCheckout('${p.id}')">
           ${p.stock === 0 ? "Stok habis" : "Beli sekarang"}
         </button>
       </div>
@@ -233,30 +233,152 @@ function renderPagination(totalPages) {
 }
 function goToPage(p) { currentPage = p; renderCatalog(); window.scrollTo({ top: 0, behavior: "smooth" }); }
 
-/* ---------------- BUY FLOW ---------------- */
-async function buyProduct(productId) {
+/* ---------------- CHECKOUT (pop up 2 tahap) ---------------- */
+const ADMIN_WHATSAPP = "6289541508402"; // 0895-4150-84082 dalam format internasional (tanpa + / 0 di depan)
+
+let checkoutProduct = null;
+let proofFile = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("checkoutCloseBtn").addEventListener("click", closeCheckout);
+  document.getElementById("toStep2Btn").addEventListener("click", goToCheckoutStep2);
+  document.getElementById("backToStep1Btn").addEventListener("click", goToCheckoutStep1);
+  document.getElementById("confirmWaBtn").addEventListener("click", submitCheckout);
+
+  document.getElementById("uploadBox").addEventListener("click", () => document.getElementById("proofInput").click());
+  document.getElementById("proofInput").addEventListener("change", onProofSelected);
+
+  document.getElementById("qrisImage").addEventListener("click", () => {
+    document.getElementById("qrisLightbox").classList.add("show");
+  });
+  document.getElementById("qrisLightboxClose").addEventListener("click", () => {
+    document.getElementById("qrisLightbox").classList.remove("show");
+  });
+  document.getElementById("qrisLightbox").addEventListener("click", (e) => {
+    if (e.target.id === "qrisLightbox") e.target.classList.remove("show");
+  });
+});
+
+// dipanggil dari tombol "Beli sekarang" pada kartu produk
+function openCheckout(productId) {
   const product = allProducts.find(p => p.id === productId);
   if (!product || product.stock <= 0) return;
+  checkoutProduct = product;
+  proofFile = null;
 
-  const price = effectivePrice(product);
-  if (!confirm(`Beli "${product.name}" seharga ${formatRp(price)}?`)) return;
+  // reset form
+  document.getElementById("buyerName").value = "";
+  document.getElementById("buyerWhatsapp").value = "";
+  document.getElementById("proofInput").value = "";
+  document.getElementById("proofPreview").style.display = "none";
+  document.getElementById("uploadPlaceholder").style.display = "block";
 
-  const { error: orderError } = await supabaseClient.from("orders").insert({
-    user_id: currentUser.id,
-    product_id: product.id,
-    product_name: product.name,
-    product_image: product.image_url,
-    quantity: 1,
-    price_paid: price,
-    status: "selesai",
-  });
+  goToCheckoutStep1();
+  document.getElementById("checkoutModal").classList.add("show");
+}
 
-  if (orderError) { alert("Gagal membuat pesanan: " + orderError.message); return; }
+function closeCheckout() {
+  document.getElementById("checkoutModal").classList.remove("show");
+}
 
-  await supabaseClient.from("products").update({ stock: product.stock - 1 }).eq("id", product.id);
+function goToCheckoutStep1() {
+  document.getElementById("checkoutStep1").classList.add("active");
+  document.getElementById("checkoutStep2").classList.remove("active");
+  document.getElementById("stepDot1").classList.add("active");
+  document.getElementById("stepDot2").classList.remove("active");
+  document.getElementById("checkoutTitle").textContent = "Form Pembeli";
+}
 
-  alert("Pembelian berhasil! Lihat di tab Riwayat.");
-  await loadProducts();
+function goToCheckoutStep2() {
+  const name = document.getElementById("buyerName").value.trim();
+  const wa = document.getElementById("buyerWhatsapp").value.trim();
+  if (!name) { alert("Nama wajib diisi."); return; }
+  if (!wa || wa.replace(/\D/g, "").length < 9) { alert("Nomor WhatsApp tidak valid."); return; }
+
+  const price = effectivePrice(checkoutProduct);
+  document.getElementById("checkoutProductSummary").innerHTML = `
+    <img src="${checkoutProduct.image_url || placeholderImg()}" alt="">
+    <div><b>${escapeHtml(checkoutProduct.name)}</b><span style="color:var(--ink-soft);">Qty 1</span></div>
+  `;
+  document.getElementById("checkoutAmount").textContent = formatRp(price);
+
+  document.getElementById("checkoutStep1").classList.remove("active");
+  document.getElementById("checkoutStep2").classList.add("active");
+  document.getElementById("stepDot1").classList.remove("active");
+  document.getElementById("stepDot2").classList.add("active");
+  document.getElementById("checkoutTitle").textContent = "Pembayaran QRIS";
+}
+
+function onProofSelected(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith("image/")) { alert("File harus berupa gambar."); return; }
+  if (file.size > 5 * 1024 * 1024) { alert("Ukuran gambar maksimal 5MB."); return; }
+
+  proofFile = file;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    document.getElementById("proofPreview").src = ev.target.result;
+    document.getElementById("proofPreview").style.display = "block";
+    document.getElementById("uploadPlaceholder").style.display = "none";
+  };
+  reader.readAsDataURL(file);
+}
+
+async function submitCheckout() {
+  if (!proofFile) { alert("Lampirkan bukti transfer terlebih dahulu."); return; }
+
+  const name = document.getElementById("buyerName").value.trim();
+  const wa = document.getElementById("buyerWhatsapp").value.trim();
+  const price = effectivePrice(checkoutProduct);
+  const btn = document.getElementById("confirmWaBtn");
+
+  btn.disabled = true; btn.textContent = "Mengunggah bukti transfer...";
+
+  try {
+    const fileExt = proofFile.name.split(".").pop();
+    const filePath = `proofs/${currentUser.id}-${Date.now()}.${fileExt}`;
+
+    const { error: uploadError } = await supabaseClient.storage.from("images").upload(filePath, proofFile);
+    if (uploadError) throw uploadError;
+
+    const { data: urlData } = supabaseClient.storage.from("images").getPublicUrl(filePath);
+    const proofUrl = urlData.publicUrl;
+
+    const { error: orderError } = await supabaseClient.from("orders").insert({
+      user_id: currentUser.id,
+      product_id: checkoutProduct.id,
+      product_name: checkoutProduct.name,
+      product_image: checkoutProduct.image_url,
+      quantity: 1,
+      price_paid: price,
+      buyer_name: name,
+      buyer_whatsapp: wa,
+      proof_url: proofUrl,
+      status: "pending",
+    });
+    if (orderError) throw orderError;
+
+    // stok langsung dikurangi saat order dibuat (status pending);
+    // dikembalikan otomatis oleh admin jika pesanan dibatalkan.
+    await supabaseClient.from("products").update({ stock: checkoutProduct.stock - 1 }).eq("id", checkoutProduct.id);
+
+    const waMessage = `Halo, saya ${name} ingin konfirmasi pembayaran:%0A` +
+      `Produk: ${checkoutProduct.name}%0A` +
+      `Total: ${formatRp(price)}%0A` +
+      `Nomor WA saya: ${wa}%0A` +
+      `Bukti transfer sudah saya unggah di sistem.`;
+
+    window.open(`https://wa.me/${ADMIN_WHATSAPP}?text=${waMessage}`, "_blank");
+
+    closeCheckout();
+    alert("Pesanan berhasil dibuat dengan status pending. Silakan selesaikan konfirmasi di WhatsApp.");
+    await loadProducts();
+  } catch (err) {
+    alert("Gagal memproses pesanan: " + (err.message || err));
+  } finally {
+    btn.disabled = false; btn.textContent = "Lanjut & Konfirmasi via WhatsApp";
+  }
 }
 
 /* ---------------- RIWAYAT ---------------- */
@@ -282,12 +404,15 @@ async function loadHistory() {
         <div class="nm">${escapeHtml(o.product_name)}</div>
         <div class="meta">${new Date(o.created_at).toLocaleString("id-ID")} • Qty ${o.quantity} • ${formatRp(o.price_paid)}</div>
       </div>
-      <div class="history-status">${escapeHtml(o.status)}</div>
+      <div class="history-status ${o.status}">${escapeHtml(statusLabel(o.status))}</div>
     </div>
   `).join("");
 }
 
 /* ---------------- UTIL ---------------- */
+function statusLabel(status) {
+  return { pending: "Menunggu konfirmasi", selesai: "Selesai", dibatalkan: "Dibatalkan" }[status] || status;
+}
 function placeholderImg() {
   return "data:image/svg+xml;utf8," + encodeURIComponent(
     `<svg xmlns='http://www.w3.org/2000/svg' width='300' height='200'><rect width='100%' height='100%' fill='%23EAF8EF'/></svg>`
