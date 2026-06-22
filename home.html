@@ -109,6 +109,150 @@
   </div>
 </footer>
 
+<!-- ===================== CHECKOUT MODAL (2 tahap) ===================== -->
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal-box checkout-box">
+    <div class="checkout-head">
+      <h3 id="checkoutTitle">Form Pembeli</h3>
+      <span class="checkout-close" id="checkoutCloseBtn">✕</span>
+    </div>
+
+    <div class="checkout-steps">
+      <div class="step-dot active" id="stepDot1">1</div>
+      <div class="step-line"></div>
+      <div class="step-dot" id="stepDot2">2</div>
+    </div>
+
+    <!-- STEP 1: data pembeli -->
+    <div class="checkout-step active" id="checkoutStep1">
+      <div class="field">
+        <label>Nama lengkap</label>
+        <div class="input-wrap"><input type="text" id="buyerName" placeholder="Nama kamu" required></div>
+      </div>
+      <div class="field">
+        <label>Nomor WhatsApp</label>
+        <div class="input-wrap"><input type="text" id="buyerWhatsapp" placeholder="cth: 0895xxxxxxxx" required></div>
+      </div>
+      <button class="btn btn-primary btn-block" id="toStep2Btn">Lanjut ke pembayaran</button>
+    </div>
+
+    <!-- STEP 2: pembayaran QRIS + bukti transfer -->
+    <div class="checkout-step" id="checkoutStep2">
+      <div class="checkout-product-summary" id="checkoutProductSummary"></div>
+
+      <div class="qris-box">
+        <div class="qris-label">Scan QRIS untuk membayar</div>
+        <img src="https://files.catbox.moe/lnjjyp.jpg" alt="QRIS" id="qrisImage" class="qris-img">
+        <div class="qris-hint">Ketuk gambar untuk memperbesar</div>
+      </div>
+
+      <div class="checkout-amount">
+        <span>Total yang harus dibayar</span>
+        <b id="checkoutAmount">Rp0</b>
+      </div>
+
+      <div class="field">
+        <label>Lampirkan bukti transfer</label>
+        <div class="upload-box" id="uploadBox">
+          <input type="file" id="proofInput" accept="image/*" hidden>
+          <div id="uploadPlaceholder">📎 Ketuk untuk pilih gambar bukti transfer</div>
+          <img id="proofPreview" style="display:none;">
+        </div>
+      </div>
+
+      <div class="checkout-btn-row">
+        <button class="btn btn-ghost" id="backToStep1Btn">Kembali</button>
+        <button class="btn btn-primary btn-block" id="confirmWaBtn">Lanjut & Konfirmasi via WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox untuk memperbesar QRIS -->
+<div class="lightbox-overlay" id="qrisLightbox">
+  <span class="lightbox-close" id="qrisLightboxClose">✕</span>
+  <img src="https://files.catbox.moe/lnjjyp.jpg" alt="QRIS perbesar">
+</div>
+
+<script src="supabaseClient.js"></script>
+<script src="home.js"></script>
+</body>
+</html>
+      <span class="ic">👤</span> Profile
+    </div>
+    <div class="nav-pill" data-view="riwayat" onclick="switchView('riwayat')">
+      <span class="ic">🧾</span> Riwayat
+    </div>
+  </div>
+
+  <!-- ===================== VIEW: HOME ===================== -->
+  <section class="view active" id="view-home">
+
+    <!-- FLASH SALE (tampil hanya jika owner menyediakan) -->
+    <div class="flash-wrap" id="flashWrap" style="display:none;">
+      <div class="flash-head">
+        <span class="bolt">⚡</span>
+        <h2>Flash Sale Hari Ini</h2>
+        <span class="flash-timer">Stok terbatas, selagi ada!</span>
+      </div>
+      <div class="flash-track" id="flashTrack"></div>
+    </div>
+
+    <!-- SEARCH + SORT -->
+    <div class="toolbar">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="Cari produk...">
+      </div>
+      <select class="sort-select" id="sortSelect">
+        <option value="default">Urutkan</option>
+        <option value="asc">Harga: Termurah</option>
+        <option value="desc">Harga: Termahal</option>
+      </select>
+    </div>
+
+    <div class="sec-head">
+      <h2>Katalog Produk</h2>
+      <span class="sub" id="productCount"></span>
+    </div>
+
+    <div class="catalog-grid" id="catalogGrid"></div>
+    <div class="empty-state" id="emptyState" style="display:none;">Belum ada produk yang cocok.</div>
+    <div class="pagination" id="pagination"></div>
+  </section>
+
+  <!-- ===================== VIEW: PROFILE ===================== -->
+  <section class="view" id="view-profile">
+    <div class="sec-head"><h2>Profile Saya</h2></div>
+    <div class="card profile-card" id="profileCard">
+      <div class="profile-avatar" id="profileAvatar">?</div>
+      <div class="profile-row"><span>Username</span><span id="profileUsername">-</span></div>
+      <div class="profile-row"><span>Role</span><span id="profileRole">-</span></div>
+      <div class="profile-row"><span>Diskon reseller</span><span id="profileDiscount">-</span></div>
+      <div class="profile-row"><span>Bergabung sejak</span><span id="profileJoined">-</span></div>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW: RIWAYAT ===================== -->
+  <section class="view" id="view-riwayat">
+    <div class="sec-head"><h2>Riwayat Pembelian</h2></div>
+    <div id="historyList"></div>
+    <div class="empty-state" id="historyEmpty" style="display:none;">Belum ada riwayat pembelian.</div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">🌿 Hijauku Marketplace</div>
+    <div class="footer-meta">
+      <div><b>Sejak</b>2024</div>
+      <div><b>Dibuat di</b>Indonesia</div>
+      <div><b>WhatsApp</b>+62 812-3456-7890</div>
+    </div>
+  </div>
+</footer>
+
 <script src="supabaseClient.js"></script>
 <script src="home.js"></script>
 </body>
