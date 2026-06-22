@@ -26,6 +26,40 @@ async function init() {
 
   document.getElementById("searchInput").addEventListener("input", applyFilters);
   document.getElementById("sortSelect").addEventListener("change", applyFilters);
+  document.getElementById("layoutSelect").addEventListener("change", onLayoutChange);
+
+  initFooterSlides();
+}
+
+/* ---------------- LAYOUT KATALOG (ke bawah / ke samping) ---------------- */
+function onLayoutChange(e) {
+  const grid = document.getElementById("catalogGrid");
+  grid.classList.toggle("layout-horizontal", e.target.value === "horizontal");
+}
+
+/* ---------------- FOOTER SLIDES (kredit perusahaan) ---------------- */
+function initFooterSlides() {
+  const wrap = document.getElementById("footerSlides");
+  const dotsWrap = document.getElementById("footerSlideDots");
+  if (!wrap || !dotsWrap) return;
+
+  const slides = wrap.querySelectorAll(".footer-slide");
+  if (slides.length <= 1) { dotsWrap.style.display = "none"; return; }
+
+  dotsWrap.innerHTML = "";
+  slides.forEach((_, i) => {
+    const dot = document.createElement("span");
+    if (i === 0) dot.classList.add("active");
+    dot.addEventListener("click", () => {
+      wrap.scrollTo({ left: wrap.clientWidth * i, behavior: "smooth" });
+    });
+    dotsWrap.appendChild(dot);
+  });
+
+  wrap.addEventListener("scroll", () => {
+    const idx = Math.round(wrap.scrollLeft / wrap.clientWidth);
+    dotsWrap.querySelectorAll("span").forEach((d, i) => d.classList.toggle("active", i === idx));
+  });
 }
 
 /* ---------------- PROFILE / ROLE ---------------- */
