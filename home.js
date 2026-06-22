@@ -64,7 +64,7 @@ function initFooterSlides() {
 
 /* ---------------- PROFILE / ROLE ---------------- */
 async function loadProfile() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("profiles")
     .select("*")
     .eq("id", currentUser.id)
@@ -106,7 +106,7 @@ function switchView(view) {
 let bannerIndex = 0, bannerTimer = null;
 
 async function loadBanners() {
-  const { data } = await supabase
+  const { data } = await supabaseClient
     .from("banners")
     .select("*")
     .eq("active", true)
@@ -148,7 +148,7 @@ function goToBanner(i) {
 
 /* ---------------- PRODUCTS ---------------- */
 async function loadProducts() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("products")
     .select("*")
     .eq("active", true)
@@ -417,7 +417,7 @@ async function submitCheckout() {
 
 /* ---------------- RIWAYAT ---------------- */
 async function loadHistory() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("orders")
     .select("*")
     .eq("user_id", currentUser.id)
