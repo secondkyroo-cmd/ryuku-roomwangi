@@ -29,17 +29,26 @@
   </div>
 
   <!-- NAV PILLS: home / profile / riwayat -->
-  <div class="nav-pills">
+  <nav class="nav-pills">
     <div class="nav-pill active" data-view="home" onclick="switchView('home')">
-      <span class="ic">🏠</span> Home
+      <span class="ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1H9a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h2.5a1 1 0 0 0 1-1v-9"/></svg>
+      </span>
+      <span class="lbl">Home</span>
     </div>
     <div class="nav-pill" data-view="profile" onclick="switchView('profile')">
-      <span class="ic">👤</span> Profile
+      <span class="ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg>
+      </span>
+      <span class="lbl">Profile</span>
     </div>
     <div class="nav-pill" data-view="riwayat" onclick="switchView('riwayat')">
-      <span class="ic">🧾</span> Riwayat
+      <span class="ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10a1 1 0 0 1 1 1v16l-2.5-1.5L13 20l-2.5-1.5L8 20l-2.5-1.5L3 20V8z" transform="translate(2 0)"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>
+      </span>
+      <span class="lbl">Riwayat</span>
     </div>
-  </div>
+  </nav>
 
   <!-- ===================== VIEW: HOME ===================== -->
   <section class="view active" id="view-home">
@@ -47,9 +56,11 @@
     <!-- FLASH SALE (tampil hanya jika owner menyediakan) -->
     <div class="flash-wrap" id="flashWrap" style="display:none;">
       <div class="flash-head">
-        <span class="bolt">⚡</span>
+        <span class="bolt">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>
+        </span>
         <h2>Flash Sale Hari Ini</h2>
-        <span class="flash-timer">Stok terbatas, selagi ada!</span>
+        <span class="flash-timer">Stok terbatas, selagi ada</span>
       </div>
       <div class="flash-track" id="flashTrack"></div>
     </div>
@@ -57,7 +68,7 @@
     <!-- SEARCH + SORT -->
     <div class="toolbar">
       <div class="search-box">
-        <span>🔍</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.3-4.3"/></svg>
         <input type="text" id="searchInput" placeholder="Cari produk...">
       </div>
       <select class="sort-select" id="sortSelect">
@@ -100,7 +111,7 @@
 
 <footer class="site-footer">
   <div class="footer-grid">
-    <div class="footer-brand">🌿 Hijauku Marketplace</div>
+    <div class="footer-brand"><span class="footer-mark"></span> Hijauku Marketplace</div>
     <div class="footer-meta">
       <div><b>Sejak</b>2024</div>
       <div><b>Dibuat di</b>Indonesia</div>
@@ -155,7 +166,7 @@
         <label>Lampirkan bukti transfer</label>
         <div class="upload-box" id="uploadBox">
           <input type="file" id="proofInput" accept="image/*" hidden>
-          <div id="uploadPlaceholder">📎 Ketuk untuk pilih gambar bukti transfer</div>
+          <div id="uploadPlaceholder"><svg class="upload-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 6.5 8.4 14.6a3 3 0 1 0 4.24 4.24l8.2-8.2a5 5 0 0 0-7.07-7.07L5.3 11.93"/></svg> Ketuk untuk pilih gambar bukti transfer</div>
           <img id="proofPreview" style="display:none;">
         </div>
       </div>
@@ -173,85 +184,6 @@
   <span class="lightbox-close" id="qrisLightboxClose">✕</span>
   <img src="https://files.catbox.moe/lnjjyp.jpg" alt="QRIS perbesar">
 </div>
-
-<script src="supabaseClient.js"></script>
-<script src="home.js"></script>
-</body>
-</html>
-      <span class="ic">👤</span> Profile
-    </div>
-    <div class="nav-pill" data-view="riwayat" onclick="switchView('riwayat')">
-      <span class="ic">🧾</span> Riwayat
-    </div>
-  </div>
-
-  <!-- ===================== VIEW: HOME ===================== -->
-  <section class="view active" id="view-home">
-
-    <!-- FLASH SALE (tampil hanya jika owner menyediakan) -->
-    <div class="flash-wrap" id="flashWrap" style="display:none;">
-      <div class="flash-head">
-        <span class="bolt">⚡</span>
-        <h2>Flash Sale Hari Ini</h2>
-        <span class="flash-timer">Stok terbatas, selagi ada!</span>
-      </div>
-      <div class="flash-track" id="flashTrack"></div>
-    </div>
-
-    <!-- SEARCH + SORT -->
-    <div class="toolbar">
-      <div class="search-box">
-        <span>🔍</span>
-        <input type="text" id="searchInput" placeholder="Cari produk...">
-      </div>
-      <select class="sort-select" id="sortSelect">
-        <option value="default">Urutkan</option>
-        <option value="asc">Harga: Termurah</option>
-        <option value="desc">Harga: Termahal</option>
-      </select>
-    </div>
-
-    <div class="sec-head">
-      <h2>Katalog Produk</h2>
-      <span class="sub" id="productCount"></span>
-    </div>
-
-    <div class="catalog-grid" id="catalogGrid"></div>
-    <div class="empty-state" id="emptyState" style="display:none;">Belum ada produk yang cocok.</div>
-    <div class="pagination" id="pagination"></div>
-  </section>
-
-  <!-- ===================== VIEW: PROFILE ===================== -->
-  <section class="view" id="view-profile">
-    <div class="sec-head"><h2>Profile Saya</h2></div>
-    <div class="card profile-card" id="profileCard">
-      <div class="profile-avatar" id="profileAvatar">?</div>
-      <div class="profile-row"><span>Username</span><span id="profileUsername">-</span></div>
-      <div class="profile-row"><span>Role</span><span id="profileRole">-</span></div>
-      <div class="profile-row"><span>Diskon reseller</span><span id="profileDiscount">-</span></div>
-      <div class="profile-row"><span>Bergabung sejak</span><span id="profileJoined">-</span></div>
-    </div>
-  </section>
-
-  <!-- ===================== VIEW: RIWAYAT ===================== -->
-  <section class="view" id="view-riwayat">
-    <div class="sec-head"><h2>Riwayat Pembelian</h2></div>
-    <div id="historyList"></div>
-    <div class="empty-state" id="historyEmpty" style="display:none;">Belum ada riwayat pembelian.</div>
-  </section>
-
-</main>
-
-<footer class="site-footer">
-  <div class="footer-grid">
-    <div class="footer-brand">🌿 Hijauku Marketplace</div>
-    <div class="footer-meta">
-      <div><b>Sejak</b>2024</div>
-      <div><b>Dibuat di</b>Indonesia</div>
-      <div><b>WhatsApp</b>+62 812-3456-7890</div>
-    </div>
-  </div>
-</footer>
 
 <script src="supabaseClient.js"></script>
 <script src="home.js"></script>
