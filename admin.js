@@ -13,7 +13,7 @@ async function initAdmin() {
   const { data: sess } = await supabaseClient.auth.getSession();
   if (!sess?.session) { window.location.href = "index.html"; return; }
 
-  const { data: profile, error } = await supabase
+  const { data: profile, error } = await supabaseClient
     .from("profiles").select("*").eq("id", sess.session.user.id).single();
 
   if (error || !profile || profile.role !== "admin") {
