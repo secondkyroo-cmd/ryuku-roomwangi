@@ -8,7 +8,15 @@ let __captchaAnswer = null;
 
 function renderCaptcha(canvasId) {
   const canvas = document.getElementById(canvasId);
+  if (!canvas) {
+    console.error(`renderCaptcha: elemen canvas dengan id "${canvasId}" tidak ditemukan di halaman.`);
+    return;
+  }
   const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    console.error(`renderCaptcha: browser tidak mendukung canvas 2d context untuk "${canvasId}".`);
+    return;
+  }
   const w = canvas.width, h = canvas.height;
 
   // background gradasi lembut
