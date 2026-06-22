@@ -128,6 +128,105 @@
   </div>
 </div>
 
+<script src="supabaseClient.js" onerror="hijaukuShowDiag('Gagal memuat ./supabaseClient.js — file tidak ditemukan di lokasi itu.')"></script>
+<script src="captcha.js" onerror="hijaukuShowDiag('Gagal memuat ./captcha.js — file tidak ditemukan di lokasi itu.')"></script>
+<script src="auth.js" onerror="hijaukuShowDiag('Gagal memuat ./auth.js — file tidak ditemukan di lokasi itu.')"></script>
+</body>
+</html>
+    <!-- sisi kiri: identitas brand -->
+    <div class="auth-side">
+      <div class="logo"><span class="dot"></span> Hijauku Marketplace</div>
+      <div>
+        <h1>Belanja dan berjualan, satu pasar yang sama.</h1>
+        <p>Masuk untuk lanjut belanja, atau daftar dalam hitungan detik untuk mulai menjelajah katalog produk terbaru, flash sale, dan harga reseller.</p>
+      </div>
+      <div style="font-size:12.5px; opacity:.8;">© Hijauku Marketplace</div>
+    </div>
+
+    <!-- sisi kanan: form -->
+    <div class="auth-main">
+      <div class="auth-tabs">
+        <div class="auth-tab active" data-tab="login">Masuk</div>
+        <div class="auth-tab" data-tab="register">Daftar</div>
+      </div>
+
+      <div id="formMsg" class="form-msg"></div>
+
+      <!-- FORM LOGIN -->
+      <form id="loginForm" class="auth-form">
+        <div class="field">
+          <label>Username</label>
+          <div class="input-wrap">
+            <input type="text" id="loginUsername" placeholder="cth: andi.green" required autocomplete="username">
+          </div>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="input-wrap">
+            <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
+            <span class="toggle-eye" data-toggle-pw="loginPassword">LIHAT</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Verifikasi captcha</label>
+          <div class="captcha-row">
+            <div class="captcha-canvas-wrap">
+              <canvas id="loginCaptchaCanvas" width="120" height="44"></canvas>
+            </div>
+            <div class="captcha-refresh" data-refresh-captcha="loginCaptchaCanvas">⟳</div>
+            <div class="input-wrap captcha-input">
+              <input type="text" id="loginCaptchaInput" placeholder="Jawaban" required>
+            </div>
+          </div>
+        </div>
+        <div class="remember-row">
+          <label><input type="checkbox" id="rememberMe" checked> Ingat saya di perangkat ini</label>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="loginBtn">Masuk</button>
+      </form>
+
+      <!-- FORM REGISTER -->
+      <form id="registerForm" class="auth-form" style="display:none;">
+        <div class="field">
+          <label>Username</label>
+          <div class="input-wrap">
+            <input type="text" id="regUsername" placeholder="Tanpa spasi, huruf kecil" required minlength="3" pattern="[a-z0-9_.]+">
+          </div>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="input-wrap">
+            <input type="password" id="regPassword" placeholder="Minimal 6 karakter" required minlength="6">
+            <span class="toggle-eye" data-toggle-pw="regPassword">LIHAT</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Ulangi password</label>
+          <div class="input-wrap">
+            <input type="password" id="regPassword2" placeholder="Ulangi password" required minlength="6">
+          </div>
+        </div>
+        <div class="field">
+          <label>Verifikasi captcha</label>
+          <div class="captcha-row">
+            <div class="captcha-canvas-wrap">
+              <canvas id="regCaptchaCanvas" width="120" height="44"></canvas>
+            </div>
+            <div class="captcha-refresh" data-refresh-captcha="regCaptchaCanvas">⟳</div>
+            <div class="input-wrap captcha-input">
+              <input type="text" id="regCaptchaInput" placeholder="Jawaban" required>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="registerBtn" style="margin-top:6px;">Daftar akun baru</button>
+        <p style="font-size:12px; color:var(--ink-soft); margin-top:12px; text-align:center;">
+          Akun baru otomatis berperan sebagai <b>user</b>. Peran admin / reseller diatur oleh admin.
+        </p>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script src="supabaseClient.js" onerror="hijaukuShowDiag('Gagal memuat assets/js/supabaseClient.js — file tidak ditemukan di lokasi itu.')"></script>
 <script src="captcha.js" onerror="hijaukuShowDiag('Gagal memuat assets/js/captcha.js — file tidak ditemukan di lokasi itu.')"></script>
 <script src="auth.js" onerror="hijaukuShowDiag('Gagal memuat assets/js/auth.js — file tidak ditemukan di lokasi itu.')"></script>
